@@ -10,10 +10,12 @@ app.use(express.json());
 
 let refreshTokens = [];
 
+// Generate a new accessToken if the user has a valid refreshToken
 app.post("/token", (req, res) => {
   const refreshToken = req.body.refreshToken;
   if (refreshToken == null) res.sendStatus(401);
   if (!refreshTokens.includes(refreshToken)) res.sendStatus(403);
+  
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (error, user) => {
     if (error) res.sendStatus(403);
     const accessToken = generateAccessToken({ username: user.username });
@@ -21,6 +23,7 @@ app.post("/token", (req, res) => {
   });
 });
 
+// Delete the user refreshToken, so the user have no long access.
 app.delete("/logout", (req, res) => {
   const refreshToken = req.body.refreshToken;
   refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
@@ -33,8 +36,10 @@ app.post("/login", (req, res) => {
   const username = req.body.username;
   const user = { username: username };
 
+  // Generate token that will expire.
   const accessToken = generateAccessToken(user);
 
+  // Generate token that we save in DB
   const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
   refreshTokens.push(refreshToken);
 
