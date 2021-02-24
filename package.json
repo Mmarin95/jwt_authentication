@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "startDev": "nodemon server.js"
+    "startDev": "nodemon server.js",
+    "startDevAuth": "nodemon authServer.js"
   },
   "keywords": [],
   "author": "",
