@@ -18,15 +18,6 @@ app.get("/posts", authenticateToken, (req, res) => {
   res.json(posts.filter((post) => post.username === user.username));
 });
 
-app.post("/login", (req, res) => {
-  // We should authenticate the user first before use JWT
-
-  const username = req.body.username;
-  const user = { username: username };
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-  res.json({ accessToken });
-});
-
 // Middleware. Checks the access token.
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
